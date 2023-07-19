@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <form method="POST" action="{{ url_for('profile') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="field">
+            <label class="label">First Name</label>
+            <div class="input is-large">
+                {{ form.name(class_="input") }}
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Last Name</label>
+            <div class="control">
+                {{ form.lastname(class_="input") }}
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Phone Number</label>
+            <div class="control">
+                {{ form.phone_number(class_="input") }}
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Gender</label>
+            <div class="control">
+                <label class="radio">
+                    {{ form.sex }}
+                </label>
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Address</label>
+            <div class="control">
+                {{ form.address(class_="textarea") }}
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Date of Birth</label>
+            <div class="control">
+                {{ form.date_of_birth(class_="input") }}
+            </div>
+        </div>
+
+        <div class="field">
+            <label class="label">Expr</label>
+            <div class="control">
+                {{ form.expr(class_="input") }}
+            </div>
+        </div>
+
+        <div class="field">
+            <div class="control">
+                {{ form.submit(class_="button is-primary") }}
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

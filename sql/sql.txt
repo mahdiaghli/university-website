@@ -1,0 +1,406 @@
+INSERT INTO `mydb`.`user` (`student_teacher`) VALUES ('teacher');
+INSERT INTO `mydb`.`user` (`student_teacher`) VALUES ('teacher');
+INSERT INTO `mydb`.`user` (`student_teacher`) VALUES ('student');
+INSERT INTO `mydb`.`user` (`student_teacher`) VALUES ('student');
+INSERT INTO `mydb`.`user` (`student_teacher`) VALUES ('student');
+INSERT INTO `mydb`.`user` (`student_teacher`) VALUES ('student');
+
+
+222
+
+
+CREATE DEFINER=`root`@`localhost` TRIGGER `food_AFTER_INSERT` AFTER INSERT ON `food` FOR EACH ROW BEGIN
+set @fuck =(select wallet -price from (select * from food , food_dict where food_dict_idfood_dict = idfood_dict and new.`PK`=`food`.`pk`) as alpha , student where student_student_id =student_id limit 1);
+
+update `mydb`.`student` set `wallet` = @fuck where new.`student_student_id`=`student_id`;
+END
+
+
+
+
+CREATE DEFINER=`root`@`localhost` TRIGGER `presence_AFTER_UPDATE` AFTER UPDATE ON `presence` FOR EACH ROW BEGIN
+
+if new.`Signature` <> 0 
+then
+set @total =(
+    SELECT SUM(point*cer)/SUM(cer)
+    FROM (
+        SELECT student_user_iduser AS id, idsubject AS sub, credits AS cer, score_student AS point
+        FROM `mydb`.`presence` AS p, `mydb`.`subject` AS s
+        WHERE s.idsubject=p.subject_idsubject AND `student_user_iduser` = NEW.`student_user_iduser` and (`Signature`=1 ) 
+    ) AS alpha);
+    
+    update `student`   set `Average` = @total where (`student_id`=new.`student_user_iduser`) ; 
+end if;
+end
+
+
+
+
+
+
+
+CREATE DEFINER=`root`@`localhost` TRIGGER `user_AFTER_INSERT` AFTER INSERT ON `user` FOR EACH ROW BEGIN
+if new.student_teacher = 'student' then
+
+INSERT INTO `mydb`.`student`
+(
+`user_iduser`)
+VALUES
+(
+new.iduser);
+else
+
+
+
+
+INSERT INTO `mydb`.`teacher`
+(
+`head_of_management_idhead_of_management`,
+`score`,
+`user_iduser`)
+VALUES
+(0,
+0,
+new.iduser);
+
+
+
+
+
+
+
+end if;
+END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-- MySQL Workbench Forward Engineering
+
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`user` (
+  `iduser` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `student_teacher` ENUM('student', 'teacher') NOT NULL,
+  PRIMARY KEY (`iduser`),
+  UNIQUE INDEX `iduser_UNIQUE` (`iduser` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`student`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`student` (
+  `user_iduser` INT UNSIGNED NOT NULL,
+  `student_id` INT NOT NULL,
+  `Average` INT(10) ZEROFILL NOT NULL,
+  INDEX `fk_student_user1_idx` (`user_iduser` ASC) VISIBLE,
+  PRIMARY KEY (`student_id`),
+  CONSTRAINT `fk_student_user1`
+    FOREIGN KEY (`user_iduser`)
+    REFERENCES `mydb`.`user` (`iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`food_dict`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`food_dict` (
+  `idfood_dict` INT NOT NULL AUTO_INCREMENT,
+  `price` INT NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`idfood_dict`),
+  UNIQUE INDEX `idfood_dict_UNIQUE` (`idfood_dict` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`food`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`food` (
+  `breakfast_lunch_dinner` ENUM('breakfast', 'lunch', 'dinner') NOT NULL,
+  `Date` DATETIME NOT NULL,
+  `PK` INT(10) NOT NULL AUTO_INCREMENT,
+  `food_dict_idfood_dict` INT NOT NULL,
+  `student_student_id` INT NOT NULL,
+  PRIMARY KEY (`PK`),
+  INDEX `fk_food_food_dict1_idx` (`food_dict_idfood_dict` ASC) VISIBLE,
+  INDEX `fk_food_student1_idx` (`student_student_id` ASC) VISIBLE,
+  CONSTRAINT `fk_food_food_dict1`
+    FOREIGN KEY (`food_dict_idfood_dict`)
+    REFERENCES `mydb`.`food_dict` (`idfood_dict`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_food_student1`
+    FOREIGN KEY (`student_student_id`)
+    REFERENCES `mydb`.`student` (`student_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`personal_information`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`personal_information` (
+  `name` VARCHAR(45) NOT NULL,
+  `lastname` VARCHAR(45) NOT NULL,
+  `sex` VARCHAR(45) NOT NULL,
+  `date_of_birth` DATETIME NOT NULL,
+  `personal_id` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
+  `phone_number` VARCHAR(45) NOT NULL,
+  `entrance_year` VARCHAR(45) NOT NULL,
+  `PK` INT(10) NOT NULL AUTO_INCREMENT,
+  `user_iduser` INT UNSIGNED NOT NULL,
+  UNIQUE INDEX `personal_id_UNIQUE` (`personal_id` ASC) VISIBLE,
+  UNIQUE INDEX `phone_number_UNIQUE` (`phone_number` ASC) VISIBLE,
+  PRIMARY KEY (`PK`),
+  INDEX `fk_personal_information_user1_idx` (`user_iduser` ASC) VISIBLE,
+  CONSTRAINT `fk_personal_information_user1`
+    FOREIGN KEY (`user_iduser`)
+    REFERENCES `mydb`.`user` (`iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`teacher`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`teacher` (
+  `idteacher` INT NOT NULL AUTO_INCREMENT,
+  `head_of_management_idhead_of_management` INT NOT NULL,
+  `score` INT NOT NULL,
+  `user_iduser` INT UNSIGNED NOT NULL,
+  PRIMARY KEY (`idteacher`),
+  UNIQUE INDEX `idteacher_UNIQUE` (`idteacher` ASC) VISIBLE,
+  INDEX `fk_teacher_user1_idx` (`user_iduser` ASC) VISIBLE,
+  CONSTRAINT `fk_teacher_user1`
+    FOREIGN KEY (`user_iduser`)
+    REFERENCES `mydb`.`user` (`iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`subject`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`subject` (
+  `idsubject` INT NOT NULL AUTO_INCREMENT,
+  `class_number` VARCHAR(45) NOT NULL,
+  `presenter_collage` VARCHAR(45) NOT NULL,
+  `title` VARCHAR(45) NOT NULL,
+  `class_time` TIME NOT NULL,
+  `average_teacher_score` INT NOT NULL,
+  `teacher_idteacher` INT NOT NULL,
+  `exam_time` DATETIME NOT NULL,
+  `average_score` INT(10) ZEROFILL NOT NULL,
+  PRIMARY KEY (`idsubject`),
+  UNIQUE INDEX `idsubject_UNIQUE` (`idsubject` ASC) VISIBLE,
+  INDEX `fk_subject_teacher1_idx` (`teacher_idteacher` ASC) VISIBLE,
+  CONSTRAINT `fk_subject_teacher1`
+    FOREIGN KEY (`teacher_idteacher`)
+    REFERENCES `mydb`.`teacher` (`idteacher`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`presence`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`presence` (
+  `subject_idsubject` INT NOT NULL,
+  `student_user_iduser` INT UNSIGNED NOT NULL,
+  `date` DATETIME NOT NULL,
+  `absence_reasons` VARCHAR(45) NOT NULL,
+  `Absence number` INT(10) ZEROFILL NOT NULL,
+  `score_student` INT(10) ZEROFILL NOT NULL,
+  `score_teacher` INT(10) ZEROFILL NOT NULL,
+  `Signature` TINYINT ZEROFILL NOT NULL,
+  `PK` INT(10) ZEROFILL NOT NULL AUTO_INCREMENT,
+  `teacher_idteacher` INT NOT NULL,
+  INDEX `fk_presence_subject1_idx` (`subject_idsubject` ASC) VISIBLE,
+  INDEX `fk_presence_student1_idx` (`student_user_iduser` ASC) VISIBLE,
+  PRIMARY KEY (`PK`),
+  INDEX `fk_presence_teacher1_idx` (`teacher_idteacher` ASC) VISIBLE,
+  CONSTRAINT `fk_presence_subject1`
+    FOREIGN KEY (`subject_idsubject`)
+    REFERENCES `mydb`.`subject` (`idsubject`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_presence_student1`
+    FOREIGN KEY (`student_user_iduser`)
+    REFERENCES `mydb`.`student` (`user_iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_presence_teacher1`
+    FOREIGN KEY (`teacher_idteacher`)
+    REFERENCES `mydb`.`teacher` (`idteacher`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`reserve_book`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`reserve_book` (
+  `name` VARCHAR(45) NULL,
+  `author` VARCHAR(45) NULL,
+  `reserve_date` DATETIME NULL,
+  `return_date` DATETIME NULL,
+  `extend_date` DATETIME NULL,
+  `situation` VARCHAR(45) NULL,
+  `depot` VARCHAR(45) NULL,
+  `student_user_iduser` INT UNSIGNED NOT NULL,
+  `PK` INT(10) NOT NULL AUTO_INCREMENT,
+  INDEX `fk_reserve_book_student1_idx` (`student_user_iduser` ASC) VISIBLE,
+  PRIMARY KEY (`PK`),
+  CONSTRAINT `fk_reserve_book_student1`
+    FOREIGN KEY (`student_user_iduser`)
+    REFERENCES `mydb`.`student` (`user_iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`payment_list`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`payment_list` (
+  `amount` INT ZEROFILL NULL,
+  `date` DATETIME NULL,
+  `payed_for` VARCHAR(45) NULL,
+  `receipt_number` VARCHAR(45) NULL,
+  `situation` VARCHAR(45) NULL,
+  `student_user_iduser1` INT UNSIGNED NOT NULL,
+  `PK` INT(10) NOT NULL AUTO_INCREMENT,
+  INDEX `fk_payment_list_student1_idx` (`student_user_iduser1` ASC) VISIBLE,
+  PRIMARY KEY (`PK`),
+  CONSTRAINT `fk_payment_list_student1`
+    FOREIGN KEY (`student_user_iduser1`)
+    REFERENCES `mydb`.`student` (`user_iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`pool_use_list`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`pool_use_list` (
+  `entrance_time` DATETIME NULL,
+  `exit_time` DATETIME NULL,
+  `usage_time` TIME NULL,
+  `along_people_number` INT NULL,
+  `payment_amount` INT NULL,
+  `student_user_iduser1` INT UNSIGNED NOT NULL,
+  `PK` INT(10) NOT NULL AUTO_INCREMENT,
+  INDEX `fk_pool_use_list_student1_idx` (`student_user_iduser1` ASC) VISIBLE,
+  PRIMARY KEY (`PK`),
+  CONSTRAINT `fk_pool_use_list_student1`
+    FOREIGN KEY (`student_user_iduser1`)
+    REFERENCES `mydb`.`student` (`user_iduser`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`user`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`user` (
+  `iduser` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `student_teacher` ENUM('student', 'teacher') NOT NULL,
+  PRIMARY KEY (`iduser`),
+  UNIQUE INDEX `iduser_UNIQUE` (`iduser` ASC) VISIBLE)
+ENGINE = InnoDB;
+
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`category`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`category` (
+  `category_id` INT NOT NULL,
+  `name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY (`category_id`));
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`timestamps`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`timestamps` (
+  `create_time` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  `update_time` TIMESTAMP NULL);
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`head_of_management`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`head_of_management` (
+  `teacher_idteacher` INT NOT NULL,
+  `begin_choose_subject_date` DATETIME NOT NULL,
+  `end_choose_subject_date` DATETIME NOT NULL,
+  INDEX `fk_head_of_management_teacher1_idx` (`teacher_idteacher` ASC) VISIBLE,
+  PRIMARY KEY (`teacher_idteacher`),
+  CONSTRAINT `fk_head_of_management_teacher1`
+    FOREIGN KEY (`teacher_idteacher`)
+    REFERENCES `mydb`.`teacher` (`idteacher`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+

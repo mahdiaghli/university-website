@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if message %}
+<div class="alert alert">{{ message }}</div>
+{% endif %}
+
+<h1 class="title">
+    university portal
+</h1>
+<h2 class="subtitle">
+    using flask & mysql
+</h2>
+{% endblock %}
